@@ -90,4 +90,18 @@ public class ProductControllerRA {
 	    	.body("content.name[0]", equalTo("Macbook Pro"));
 			
 	}
+	
+	@Test
+	public void findAllPaginadaFiltraProdutoComPrecoMaiorQueDoisMil() {
+		
+		RestAssured.given()
+		.queryParam("?size=25")
+	    	.accept(ContentType.JSON)
+	    .when()
+	    	.get()
+	    .then()
+	    	.statusCode(HttpStatus.OK.value())
+	    	.body("content.findAll { it.price > 2000.0}.name", hasItems("PC Gamer Hera"));
+	
+	}
 }
