@@ -26,9 +26,11 @@ public class ProductControllerRA {
 	private int port;
 	
 	private Long idExistente , idInexistente;
+	private String buscaPorNome ;
 	
 	@BeforeAll
 	void setUp() throws Exception {
+		buscaPorNome = "Macbook";
 		idExistente = 2l;
 		idInexistente = 2000L;
 		RestAssured.port = port;
@@ -72,5 +74,20 @@ public class ProductControllerRA {
 		.then()
 			.statusCode(HttpStatus.OK.value())
 			.body("content.name", hasItems("Macbook Pro" , "PC Gamer"));
+	}
+	
+	@Test
+	public void findAllPaginadaFiltraProdutosPorNomeEExibeListagemPaginadaQuandoCampoNomePreenchidos() {
+		
+		RestAssured.given()
+	    	.accept(ContentType.JSON)
+	    	.queryParam("name", buscaPorNome)
+	    .when()
+	    	.get()
+	    .then()
+	    	.statusCode(HttpStatus.OK.value())
+	    	.body("content.id[0]", is(3))
+	    	.body("content.name[0]", equalTo("Macbook Pro"));
+			
 	}
 }
