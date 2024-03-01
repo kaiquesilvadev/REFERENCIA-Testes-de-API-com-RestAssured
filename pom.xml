@@ -66,6 +66,19 @@
 			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
 		</dependency>
 
+
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>
@@ -81,15 +94,22 @@
 				<version>0.8.7</version>
 				<configuration>
 					<excludes>
-						<exclude>com/devsuperior/dscommerce/DscommerceApplication.class</exclude>
-						<exclude>com/devsuperior/dscommerce/config/**</exclude>
-						<exclude>com/devsuperior/dscommerce/entities/**</exclude>
-						<exclude>com/devsuperior/dscommerce/dto/**</exclude>
-						<exclude>com/devsuperior/dscommerce/controllers/handlers/**</exclude>
-						<exclude>com/devsuperior/dscommerce/services/exceptions/**</exclude>
-						<exclude>com/devsuperior/dscommerce/util/**</exclude>
-						<exclude>com/devsuperior/dscommerce/controllers/**</exclude>s
-					</excludes>
+						<exclude>
+						com/devsuperior/dscommerce/DscommerceApplication.class</exclude>
+						<exclude>
+						com/devsuperior/dscommerce/config/**</exclude>
+						<exclude>
+						com/devsuperior/dscommerce/entities/**</exclude>
+						<exclude>
+						com/devsuperior/dscommerce/dto/**</exclude>
+						<exclude>
+						com/devsuperior/dscommerce/controllers/handlers/**</exclude>
+						<exclude>
+						com/devsuperior/dscommerce/services/exceptions/**</exclude>
+						<exclude>
+						com/devsuperior/dscommerce/util/**</exclude>
+						<exclude>
+						com/devsuperior/dscommerce/controllers/**</exclude>s </excludes>
 				</configuration>
 				<executions>
 					<execution>
