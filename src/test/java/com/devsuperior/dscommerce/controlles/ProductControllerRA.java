@@ -32,6 +32,7 @@ public class ProductControllerRA {
 		idExistente = 2l;
 		idInexistente = 2000L;
 		RestAssured.port = port;
+		RestAssured.basePath = "/products";
 	}
 	
 	@Test
@@ -40,7 +41,7 @@ public class ProductControllerRA {
 		RestAssured.given()
 		    .accept(ContentType.JSON)
 		.when()
-			.get("/products/{id}" , idExistente)
+			.get("/{id}" , idExistente)
 		.then()
 			.statusCode(HttpStatus.OK.value())
 			.body("id" , is(idExistente.intValue()))
@@ -56,8 +57,20 @@ public class ProductControllerRA {
 		RestAssured.given()
 		    .accept(ContentType.JSON)
 		.when()
-			.get("/products/{id}" , idInexistente)
+			.get("/{id}" , idInexistente)
 		.then()
 			.statusCode(HttpStatus.NOT_FOUND.value());
+	}
+	
+	@Test
+	public void findAllPaginadaExibeListagemPaginadaQuandoCampoNomeNaoPreenchido() {
+		
+		RestAssured.given()
+		    .accept(ContentType.JSON)
+		.when()
+			.get()
+		.then()
+			.statusCode(HttpStatus.OK.value())
+			.body("content.name", hasItems("Macbook Pro" , "PC Gamer"));
 	}
 }
