@@ -25,16 +25,17 @@ public class ProductControllerRA {
 	@LocalServerPort
 	private int port;
 	
-	private Long idExistente;
+	private Long idExistente , idInexistente;
 	
 	@BeforeAll
 	void setUp() throws Exception {
 		idExistente = 2l;
+		idInexistente = 2000L;
 		RestAssured.port = port;
 	}
 	
 	@Test
-	public void teste() {
+	public void findByIdDeveRetornaCodigo200EProductDTOQuandoIdExstente() {
 		
 		RestAssured.given()
 		    .accept(ContentType.JSON)
@@ -47,5 +48,16 @@ public class ProductControllerRA {
 			.body("price", is(2190.0F))
 			.body("categories.id", hasItems(2 , 3))
 			.body("categories.name", hasItems("Eletrônicos" , "Computadores"));
+	}
+	
+	@Test
+	public void findByIdDeveRetornaCodigo404QuandoIdInexistente() {
+		
+		RestAssured.given()
+		    .accept(ContentType.JSON)
+		.when()
+			.get("/products/{id}" , idInexistente)
+		.then()
+			.statusCode(HttpStatus.NOT_FOUND.value());
 	}
 }
