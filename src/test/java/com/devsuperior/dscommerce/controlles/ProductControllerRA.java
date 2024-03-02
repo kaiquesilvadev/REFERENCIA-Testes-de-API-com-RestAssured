@@ -123,7 +123,7 @@ public class ProductControllerRA {
 	public void findAllPaginadaFiltraProdutoComPrecoMaiorQueDoisMil() {
 		
 		RestAssured.given()
-		.queryParam("?size=25")
+			.queryParam("?size=25")
 	    	.accept(ContentType.JSON)
 	    .when()
 	    	.get()
@@ -139,15 +139,32 @@ public class ProductControllerRA {
 		
 		
 		RestAssured.given()
-		.header("Content-type", "application/json")
-		.header("Authorization", "Bearer " + adminToken)
-		.body(newProduct)
-		.contentType(ContentType.JSON)
-		.accept(ContentType.JSON)
-	.when()
-		.post()
-	.then()
-		.statusCode(201);
+			.header("Content-type", "application/json")
+			.header("Authorization", "Bearer " + adminToken)
+			.body(newProduct)
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.post()
+		.then()
+			.statusCode(201);
+	}
 	
+	public void insertDeProdutoRetorna422QuandoLogadoComoAdminENomeInvalido() throws JsonProcessingException {
+		
+		product.setName("");
+		String newProduct = objectMapper.writeValueAsString(new ProductDTO(product)); 
+		
+		
+		RestAssured.given()
+			.header("Content-type", "application/json")
+			.header("Authorization", "Bearer " + adminToken)
+			.body(newProduct)
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.post()
+		.then()
+			.statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
 	}
 }
