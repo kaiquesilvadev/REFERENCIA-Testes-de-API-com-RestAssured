@@ -187,4 +187,23 @@ public class ProductControllerRA {
 		.then()
 			.statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
 	}
+	
+	@Test
+	public void insertDeProdutoRetorna422QuandoLogadoComoAdminECampoPrecoForNegativo() throws JsonProcessingException {
+		
+		product.setPrice(-20.00);
+		String newProduct = objectMapper.writeValueAsString(new ProductDTO(product)); 
+		
+		
+		RestAssured.given()
+			.header("Content-type", "application/json")
+			.header("Authorization", "Bearer " + adminToken)
+			.body(newProduct)
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.post()
+		.then()
+			.statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
+	}
 }
