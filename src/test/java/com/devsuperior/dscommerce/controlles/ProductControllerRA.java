@@ -207,9 +207,9 @@ public class ProductControllerRA {
 	}
 	
 	@Test
-	public void insertDeProdutoRetorna422QuandoLogadoComoAdminECampoPrecoForIgualAZero() throws JsonProcessingException {
+	public void insertDeProdutoRetorna422QuandoLogadoComoAdminENaoTiverCategoriaAssociada() throws JsonProcessingException {
 		
-		product.setPrice(-20.00);
+		product.getCategories().clear();
 		String newProduct = objectMapper.writeValueAsString(new ProductDTO(product)); 
 		
 		RestAssured.given()
