@@ -224,4 +224,21 @@ public class ProductControllerRA {
 			.statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
 	}
 	
+	@Test
+	public void insertDeProdutoRetorna403QuandoLogadoComoCliente() throws JsonProcessingException {
+		
+		String newProduct = objectMapper.writeValueAsString(new ProductDTO(product)); 
+		
+		RestAssured.given()
+			.header("Content-type", "application/json")
+			.header("Authorization", "Bearer " + clientToken)
+			.body(newProduct)
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.post()
+		.then()
+			.statusCode(HttpStatus.FORBIDDEN.value());
+	}
+	
 }
