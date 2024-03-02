@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.devsuperior.dscommerce.dto.ProductDTO;
 import com.devsuperior.dscommerce.entities.Product;
@@ -25,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
+@Transactional
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)//A anotação cria e inicializa o nosso ambiente de testes.
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)//A anotação permite modificar o ciclo de vida da Classe de testes.
 public class ProductControllerRA {
@@ -137,7 +139,6 @@ public class ProductControllerRA {
 	public void insertDeProdutoInsereProdutoComDadosValidosQuandoLogadoComoAdmin() throws JsonProcessingException {
 		String newProduct = objectMapper.writeValueAsString(new ProductDTO(product)); 
 		
-		
 		RestAssured.given()
 			.header("Content-type", "application/json")
 			.header("Authorization", "Bearer " + adminToken)
@@ -175,7 +176,6 @@ public class ProductControllerRA {
 		product.setDescription("");
 		String newProduct = objectMapper.writeValueAsString(new ProductDTO(product)); 
 		
-		
 		RestAssured.given()
 			.header("Content-type", "application/json")
 			.header("Authorization", "Bearer " + adminToken)
@@ -194,6 +194,23 @@ public class ProductControllerRA {
 		product.setPrice(-20.00);
 		String newProduct = objectMapper.writeValueAsString(new ProductDTO(product)); 
 		
+		RestAssured.given()
+			.header("Content-type", "application/json")
+			.header("Authorization", "Bearer " + adminToken)
+			.body(newProduct)
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.post()
+		.then()
+			.statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
+	}
+	
+	@Test
+	public void insertDeProdutoRetorna422QuandoLogadoComoAdminECampoPrecoForIgualAZero() throws JsonProcessingException {
+		
+		product.setPrice(-20.00);
+		String newProduct = objectMapper.writeValueAsString(new ProductDTO(product)); 
 		
 		RestAssured.given()
 			.header("Content-type", "application/json")
@@ -206,4 +223,5 @@ public class ProductControllerRA {
 		.then()
 			.statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
 	}
+	
 }
