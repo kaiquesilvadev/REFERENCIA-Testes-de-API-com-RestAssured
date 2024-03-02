@@ -240,5 +240,22 @@ public class ProductControllerRA {
 		.then()
 			.statusCode(HttpStatus.FORBIDDEN.value());
 	}
+
+	@Test
+	public void insertDeProdutoRetorna401QuandoNaoLogadoComoAdminOuClient() throws JsonProcessingException {
+		
+		String newProduct = objectMapper.writeValueAsString(new ProductDTO(product)); 
+		
+		RestAssured.given()
+			.header("Content-type", "application/json")
+			.header("Authorization", "Bearer " + invalidToken)
+			.body(newProduct)
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.post()
+		.then()
+			.statusCode(HttpStatus.UNAUTHORIZED.value());
+	}
 	
 }
