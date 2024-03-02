@@ -150,9 +150,29 @@ public class ProductControllerRA {
 			.statusCode(201);
 	}
 	
+	@Test
 	public void insertDeProdutoRetorna422QuandoLogadoComoAdminENomeInvalido() throws JsonProcessingException {
 		
 		product.setName("");
+		String newProduct = objectMapper.writeValueAsString(new ProductDTO(product)); 
+		
+		
+		RestAssured.given()
+			.header("Content-type", "application/json")
+			.header("Authorization", "Bearer " + adminToken)
+			.body(newProduct)
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.post()
+		.then()
+			.statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
+	}
+	
+	@Test
+	public void insertDeProdutoRetorna422QuandoLogadoComoAdminEDescriptionInvalido() throws JsonProcessingException {
+		
+		product.setDescription("");
 		String newProduct = objectMapper.writeValueAsString(new ProductDTO(product)); 
 		
 		
