@@ -9,10 +9,18 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+
+import com.devsuperior.dscommerce.dto.ProductDTO;
+import com.devsuperior.dscommerce.entities.Product;
+import com.devsuperior.dscommerce.tests.ProductFactory;
+import com.devsuperior.dscommerce.util.TokenUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -25,15 +33,35 @@ public class ProductControllerRA {
 	@LocalServerPort
 	private int port;
 	
+	@Autowired
+	private ObjectMapper objectMapper;
+	
+	private String clientUsername, clientPassword, adminUsername, adminPassword;
+	private String adminToken, clientToken, invalidToken;
+	
+	private Product product;
+	private ProductDTO productDTO;
 	private Long idExistente , idInexistente;
 	private String buscaPorNome ;
 	
 	@BeforeAll
 	void setUp() throws Exception {
+		
+		clientUsername = "maria@gmail.com";
+		clientPassword = "123456";
+		adminUsername = "alex@gmail.com";
+		adminPassword = "123456";
+		
+		clientToken = TokenUtil.obtainAccessToken(clientUsername, clientPassword);
+		adminToken = TokenUtil.obtainAccessToken(adminUsername, adminPassword);
+		invalidToken = adminToken + "xpto";
+		
+		product = ProductFactory.createProduct();
+		
 		buscaPorNome = "Macbook";
 		idExistente = 2l;
 		idInexistente = 2000L;
-		RestAssured.port = port;
+		RestAssured.baseURI = "http://localhost:8080";
 		RestAssured.basePath = "/products";
 	}
 	
@@ -95,7 +123,7 @@ public class ProductControllerRA {
 	public void findAllPaginadaFiltraProdutoComPrecoMaiorQueDoisMil() {
 		
 		RestAssured.given()
-		.queryParam("?size=25")
+			.queryParam("?size=25")
 	    	.accept(ContentType.JSON)
 	    .when()
 	    	.get()
@@ -103,5 +131,60 @@ public class ProductControllerRA {
 	    	.statusCode(HttpStatus.OK.value())
 	    	.body("content.findAll { it.price > 2000.0}.name", hasItems("PC Gamer Hera"));
 	
+	}
+	
+	@Test
+	public void insertDeProdutoInsereProdutoComDadosValidosQuandoLogadoComoAdmin() throws JsonProcessingException {
+		String newProduct = objectMapper.writeValueAsString(new ProductDTO(product)); 
+		
+		
+		RestAssured.given()
+			.header("Content-type", "application/json")
+			.header("Authorization", "Bearer " + adminToken)
+			.body(newProduct)
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.post()
+		.then()
+			.statusCode(201);
+	}
+	
+	@Test
+	public void insertDeProdutoRetorna422QuandoLogadoComoAdminENomeInvalido() throws JsonProcessingException {
+		
+		product.setName("");
+		String newProduct = objectMapper.writeValueAsString(new ProductDTO(product)); 
+		
+		
+		RestAssured.given()
+			.header("Content-type", "application/json")
+			.header("Authorization", "Bearer " + adminToken)
+			.body(newProduct)
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.post()
+		.then()
+			.statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
+	}
+	
+	@Test
+	public void insertDeProdutoRetorna422QuandoLogadoComoAdminEDescriptionInvalido() throws JsonProcessingException {
+		
+		product.setDescription("");
+		String newProduct = objectMapper.writeValueAsString(new ProductDTO(product)); 
+		
+		
+		RestAssured.given()
+			.header("Content-type", "application/json")
+			.header("Authorization", "Bearer " + adminToken)
+			.body(newProduct)
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.post()
+		.then()
+			.statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
 	}
 }
