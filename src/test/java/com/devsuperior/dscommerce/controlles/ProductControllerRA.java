@@ -1,12 +1,10 @@
 package com.devsuperior.dscommerce.controlles;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.devsuperior.dscommerce.dto.ProductDTO;
 import com.devsuperior.dscommerce.entities.Product;
@@ -26,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
-@Transactional
+
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)//A anotação cria e inicializa o nosso ambiente de testes.
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)//A anotação permite modificar o ciclo de vida da Classe de testes.
 public class ProductControllerRA {
@@ -258,4 +255,17 @@ public class ProductControllerRA {
 			.statusCode(HttpStatus.UNAUTHORIZED.value());
 	}
 	
+	@Test
+	public void deleteDeveDeletarQuandoIdExistenteELogadoComoAdmin() throws JsonProcessingException {
+		
+		idExistente = 24l;
+		
+		RestAssured.given()
+			.header("Authorization", "Bearer " + adminToken)
+			.accept(ContentType.JSON)
+		.when()
+			.delete("/{id}" , idExistente)
+		.then()
+			.statusCode(HttpStatus.NO_CONTENT.value());
+	}
 }
