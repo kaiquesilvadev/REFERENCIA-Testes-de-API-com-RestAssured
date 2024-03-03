@@ -40,7 +40,7 @@ public class ProductControllerRA {
 	
 	private Product product;
 	private ProductDTO productDTO;
-	private Long idExistente , idInexistente;
+	private Long idExistente , idInexistente , dependentProductId;
 	private String buscaPorNome ;
 	
 	@BeforeAll
@@ -281,5 +281,21 @@ public class ProductControllerRA {
 			.delete("/{id}" , idInexistente)
 		.then()
 			.statusCode(HttpStatus.NOT_FOUND.value());
+	}
+	
+	//Deleção de produto retorna 400 para produto dependente quando logado como admin
+	
+	@Test
+	public void deleteDeveRetorna400QuandoIdDependenteELogadoComoAdmin() throws JsonProcessingException {
+		
+		dependentProductId = 3l;
+		
+		RestAssured.given()
+			.header("Authorization", "Bearer " + adminToken)
+			.accept(ContentType.JSON)
+		.when()
+			.delete("/{id}" , dependentProductId)
+		.then()
+			.statusCode(HttpStatus.BAD_REQUEST.value());
 	}
 }
