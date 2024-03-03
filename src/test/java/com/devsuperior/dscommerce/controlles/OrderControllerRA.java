@@ -102,4 +102,17 @@ public class OrderControllerRA {
 		.then()
 			.statusCode(HttpStatus.NOT_FOUND.value());
 	}
+
+	@Test
+	public void findByIdDeveRetorna401QuandoNaoLogadoComoAdminClient() {
+		
+		RestAssured.given()
+			.header("Authorization", "Bearer " + invalidToken)
+		    .accept(ContentType.JSON)
+		.when()
+			.get("/orders/{id}" , idInexistente)
+		.then()
+			.statusCode(HttpStatus.UNAUTHORIZED.value());
+	}
+
 }
