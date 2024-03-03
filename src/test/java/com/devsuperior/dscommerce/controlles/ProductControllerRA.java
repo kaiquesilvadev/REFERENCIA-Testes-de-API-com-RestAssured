@@ -62,7 +62,6 @@ public class ProductControllerRA {
 		idExistente = 2l;
 		idInexistente = 2000L;
 		RestAssured.baseURI = "http://localhost:8080";
-		RestAssured.basePath = "/products";
 	}
 	
 	@Test
@@ -71,7 +70,7 @@ public class ProductControllerRA {
 		RestAssured.given()
 		    .accept(ContentType.JSON)
 		.when()
-			.get("/{id}" , idExistente)
+			.get("/products/{id}" , idExistente)
 		.then()
 			.statusCode(HttpStatus.OK.value())
 			.body("id" , is(idExistente.intValue()))
@@ -87,7 +86,7 @@ public class ProductControllerRA {
 		RestAssured.given()
 		    .accept(ContentType.JSON)
 		.when()
-			.get("/{id}" , idInexistente)
+			.get("/products/{id}" , idInexistente)
 		.then()
 			.statusCode(HttpStatus.NOT_FOUND.value());
 	}
@@ -98,7 +97,7 @@ public class ProductControllerRA {
 		RestAssured.given()
 		    .accept(ContentType.JSON)
 		.when()
-			.get()
+			.get("/products")
 		.then()
 			.statusCode(HttpStatus.OK.value())
 			.body("content.name", hasItems("Macbook Pro" , "PC Gamer"));
@@ -111,7 +110,7 @@ public class ProductControllerRA {
 	    	.accept(ContentType.JSON)
 	    	.queryParam("name", buscaPorNome)
 	    .when()
-	    	.get()
+	    	.get("/products")
 	    .then()
 	    	.statusCode(HttpStatus.OK.value())
 	    	.body("content.id[0]", is(3))
@@ -126,7 +125,7 @@ public class ProductControllerRA {
 			.queryParam("?size=25")
 	    	.accept(ContentType.JSON)
 	    .when()
-	    	.get()
+	    	.get("/products")
 	    .then()
 	    	.statusCode(HttpStatus.OK.value())
 	    	.body("content.findAll { it.price > 2000.0}.name", hasItems("PC Gamer Hera"));
@@ -144,7 +143,7 @@ public class ProductControllerRA {
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 		.when()
-			.post()
+			.post("/products")
 		.then()
 			.statusCode(201);
 	}
@@ -163,7 +162,7 @@ public class ProductControllerRA {
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 		.when()
-			.post()
+			.post("/products")
 		.then()
 			.statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
 	}
@@ -181,7 +180,7 @@ public class ProductControllerRA {
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 		.when()
-			.post()
+			.post("/products")
 		.then()
 			.statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
 	}
@@ -199,7 +198,7 @@ public class ProductControllerRA {
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 		.when()
-			.post()
+			.post("/products")
 		.then()
 			.statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
 	}
@@ -217,7 +216,7 @@ public class ProductControllerRA {
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 		.when()
-			.post()
+			.post("/products")
 		.then()
 			.statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
 	}
@@ -234,7 +233,7 @@ public class ProductControllerRA {
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 		.when()
-			.post()
+			.post("/products")
 		.then()
 			.statusCode(HttpStatus.FORBIDDEN.value());
 	}
@@ -251,7 +250,7 @@ public class ProductControllerRA {
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 		.when()
-			.post()
+			.post("/products")
 		.then()
 			.statusCode(HttpStatus.UNAUTHORIZED.value());
 	}
@@ -265,7 +264,7 @@ public class ProductControllerRA {
 			.header("Authorization", "Bearer " + adminToken)
 			.accept(ContentType.JSON)
 		.when()
-			.delete("/{id}" , idExistente)
+			.delete("/products/{id}" , idExistente)
 		.then()
 			.statusCode(HttpStatus.NO_CONTENT.value());
 	}
@@ -279,7 +278,7 @@ public class ProductControllerRA {
 			.header("Authorization", "Bearer " + adminToken)
 			.accept(ContentType.JSON)
 		.when()
-			.delete("/{id}" , idInexistente)
+			.delete("/products/{id}" , idInexistente)
 		.then()
 			.statusCode(HttpStatus.NOT_FOUND.value());
 	}
@@ -293,7 +292,7 @@ public class ProductControllerRA {
 			.header("Authorization", "Bearer " + adminToken)
 			.accept(ContentType.JSON)
 		.when()
-			.delete("/{id}" , dependentProductId)
+			.delete("/products/{id}" , dependentProductId)
 		.then()
 			.statusCode(HttpStatus.BAD_REQUEST.value());
 	}
@@ -307,7 +306,7 @@ public class ProductControllerRA {
 			.header("Authorization", "Bearer " + clientToken)
 			.accept(ContentType.JSON)
 		.when()
-			.delete("/{id}" , dependentProductId)
+			.delete("/products/{id}" , dependentProductId)
 		.then()
 			.statusCode(HttpStatus.FORBIDDEN.value());
 	}
@@ -321,7 +320,7 @@ public class ProductControllerRA {
 			.header("Authorization", "Bearer " + invalidToken)
 			.accept(ContentType.JSON)
 		.when()
-			.delete("/{id}" , dependentProductId)
+			.delete("/products/{id}" , dependentProductId)
 		.then()
 			.statusCode(HttpStatus.UNAUTHORIZED.value());
 	}

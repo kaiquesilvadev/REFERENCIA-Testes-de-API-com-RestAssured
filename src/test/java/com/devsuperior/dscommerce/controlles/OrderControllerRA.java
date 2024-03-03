@@ -36,9 +36,9 @@ public class OrderControllerRA {
 		
 	
 		idExistente = 2l;
+		idInexistente = 1000l;
 		
 		RestAssured.baseURI = "http://localhost:8080";
-		RestAssured.basePath = "/orders";
 	}
 	
 	@Test
@@ -48,7 +48,7 @@ public class OrderControllerRA {
 			.header("Authorization", "Bearer " + adminToken)
 		    .accept(ContentType.JSON)
 		.when()
-			.get("/{id}" , idExistente)
+			.get("/orders/{id}" , idExistente)
 		.then()
 			.statusCode(HttpStatus.OK.value());
 	}
@@ -61,9 +61,33 @@ public class OrderControllerRA {
 			.header("Authorization", "Bearer " + clientToken)
 		    .accept(ContentType.JSON)
 		.when()
-			.get("/{id}" , idExistente)
+			.get("/orders/{id}" , idExistente)
 		.then()
 			.statusCode(HttpStatus.OK.value());
 	}
-
+	
+	@Test
+	public void findByIdDeveRetorna403QuandoPedidoNaoPertenceAoUsuario() {
+		idExistente = 2l;
+		
+		RestAssured.given()
+			.header("Authorization", "Bearer " + clientToken)
+		    .accept(ContentType.JSON)
+		.when()
+			.get("/orders/{id}" , idExistente)
+		.then()
+			.statusCode(HttpStatus.FORBIDDEN.value());
+	}
+	
+	@Test
+	public void findByIdDeveRetorna404ParaPedidoInexistenteQuandoLogadoComoAdmin() {
+		
+		RestAssured.given()
+			.header("Authorization", "Bearer " + adminToken)
+		    .accept(ContentType.JSON)
+		.when()
+			.get("/orders/{id}" , idInexistente)
+		.then()
+			.statusCode(HttpStatus.BAD_REQUEST.value());
+	}
 }
