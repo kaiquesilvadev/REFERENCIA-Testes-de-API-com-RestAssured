@@ -310,4 +310,18 @@ public class ProductControllerRA {
 		.then()
 			.statusCode(HttpStatus.FORBIDDEN.value());
 	}
+	
+	@Test
+	public void deleteDeveRetorna401QuandoNaoLogadoComoClienteOuAdmin() throws JsonProcessingException {
+		
+		dependentProductId = 3l;
+		
+		RestAssured.given()
+			.header("Authorization", "Bearer " + invalidToken)
+			.accept(ContentType.JSON)
+		.when()
+			.delete("/{id}" , dependentProductId)
+		.then()
+			.statusCode(HttpStatus.UNAUTHORIZED.value());
+	}
 }
