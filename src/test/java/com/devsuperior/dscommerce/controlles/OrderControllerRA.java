@@ -88,6 +88,6 @@ public class OrderControllerRA {
 		.when()
 			.get("/orders/{id}" , idInexistente)
 		.then()
-			.statusCode(HttpStatus.BAD_REQUEST.value());
+			.statusCode(HttpStatus.NOT_FOUND.value());
 	}
 }
