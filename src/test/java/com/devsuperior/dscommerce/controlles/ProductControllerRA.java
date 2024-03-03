@@ -268,4 +268,18 @@ public class ProductControllerRA {
 		.then()
 			.statusCode(HttpStatus.NO_CONTENT.value());
 	}
+	
+	@Test
+	public void deleteDeveRetorna404QuandoIdInexistenteELogadoComoAdmin() throws JsonProcessingException {
+		
+		idInexistente = 1114l;
+		
+		RestAssured.given()
+			.header("Authorization", "Bearer " + adminToken)
+			.accept(ContentType.JSON)
+		.when()
+			.delete("/{id}" , idInexistente)
+		.then()
+			.statusCode(HttpStatus.NOT_FOUND.value());
+	}
 }
