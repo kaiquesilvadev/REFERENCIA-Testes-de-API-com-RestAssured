@@ -283,8 +283,6 @@ public class ProductControllerRA {
 			.statusCode(HttpStatus.NOT_FOUND.value());
 	}
 	
-	//Deleção de produto retorna 400 para produto dependente quando logado como admin
-	
 	@Test
 	public void deleteDeveRetorna400QuandoIdDependenteELogadoComoAdmin() throws JsonProcessingException {
 		
@@ -297,5 +295,19 @@ public class ProductControllerRA {
 			.delete("/{id}" , dependentProductId)
 		.then()
 			.statusCode(HttpStatus.BAD_REQUEST.value());
+	}
+	
+	@Test
+	public void deleteDeveRetorna403QuandoLogadoComoCliente() throws JsonProcessingException {
+		
+		dependentProductId = 3l;
+		
+		RestAssured.given()
+			.header("Authorization", "Bearer " + clientToken)
+			.accept(ContentType.JSON)
+		.when()
+			.delete("/{id}" , dependentProductId)
+		.then()
+			.statusCode(HttpStatus.FORBIDDEN.value());
 	}
 }
