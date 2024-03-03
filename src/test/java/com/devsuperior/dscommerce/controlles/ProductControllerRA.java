@@ -5,6 +5,7 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ public class ProductControllerRA {
 	private Long idExistente , idInexistente , dependentProductId;
 	private String buscaPorNome ;
 	
-	@BeforeAll
+	@BeforeEach
 	void setUp() throws Exception {
 		
 		clientUsername = "maria@gmail.com";
