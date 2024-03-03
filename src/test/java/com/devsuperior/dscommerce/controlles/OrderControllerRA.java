@@ -90,4 +90,16 @@ public class OrderControllerRA {
 		.then()
 			.statusCode(HttpStatus.NOT_FOUND.value());
 	}
+
+	@Test
+	public void findByIdDeveRetorna404ParaPedidoInexistenteQuandoLogadoComoClient() {
+		
+		RestAssured.given()
+			.header("Authorization", "Bearer " + clientToken)
+		    .accept(ContentType.JSON)
+		.when()
+			.get("/orders/{id}" , idInexistente)
+		.then()
+			.statusCode(HttpStatus.NOT_FOUND.value());
+	}
 }
